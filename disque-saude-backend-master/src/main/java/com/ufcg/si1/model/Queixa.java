@@ -1,7 +1,10 @@
 package com.ufcg.si1.model;
 
 import exceptions.ObjetoInvalidoException;
-import org.springframework.http.ResponseEntity;
+
+import com.ufcg.si1.state.EstadoQueixa;
+import com.ufcg.si1.state.IQueixaState;
+import com.ufcg.si1.state.QueixaAberta;
 
 public class Queixa {
 
@@ -11,26 +14,28 @@ public class Queixa {
 
 	private Pessoa solicitante;
 
-	public int situacao; // usa variaveis estaticas abaixo
-	/* situacoes da queixa */
-	public static final int ABERTA = 1;
-	public static final int EM_ANDAMENTO = 2;
-	public static final int FECHADA = 3;
-
-	private String comentario = ""; // usado na atualizacao da queixa
+	private Endereco estabelecimento;
+	
+	private EstadoQueixa estado;
+	
+	private IQueixaState queixaState;
+	
+	private String comentario = ""; 
 
 	public Queixa(){
-		id=0;
+		id = 0;
 	}
 
-	public Queixa(long id, String descricao, int situacao, String comentario,
+	public Queixa(long id, String descricao, EstadoQueixa estado, String comentario,
                   String nome, String email,
 				  String rua, String uf, String cidade) {
 		this.id = id;
 		this.descricao = descricao;
-		this.situacao = situacao;
+		this.estado = estado;
 		this.comentario = comentario;
-		this.solicitante = new Pessoa(nome, email, rua, uf, cidade);
+		this.queixaState = new QueixaAberta();
+		this.solicitante = new Pessoa(nome, email);
+		this.estabelecimento = new Endereco(rua, uf, cidade);
 	}
 
 	public long getId() {
@@ -49,24 +54,34 @@ public class Queixa {
 		this.descricao = descricao;
 	}
 
-	public int getSituacao() {
-		return situacao;
+	public EstadoQueixa getSituacao() {
+		return estado;
 	}
+	//a queixa se abre e fecha!?
 
 	public void abrir() throws ObjetoInvalidoException {
-		if (this.situacao != Queixa.EM_ANDAMENTO)
-			this.situacao = Queixa.ABERTA;
+		if (this.estado != EstadoQueixa.EM_ANDAMENTO)
+			this.estado = EstadoQueixa.ABERTA;
+			
 		else
 			throw new ObjetoInvalidoException("Status inválido");
 	}
 
 	public void fechar(String coment) throws ObjetoInvalidoException {
-		if (this.situacao == Queixa.EM_ANDAMENTO
-				|| this.situacao == Queixa.ABERTA) {
-			this.situacao = Queixa.FECHADA;
+		if (this.estado == EstadoQueixa.EM_ANDAMENTO
+				|| this.estado == EstadoQueixa.ABERTA) {
+			this.estado = EstadoQueixa.FECHADA;
 			this.comentario = coment;
 		} else
 			throw new ObjetoInvalidoException("Status Inválido");
+	}
+	
+	public void alteraState(IQueixaState state) {
+		this.queixaState = state;
+	}
+	
+	public IQueixaState verificaState() {
+		return this.queixaState;
 	}
 
 	public String getComentario() {
@@ -83,6 +98,22 @@ public class Queixa {
 
 	public void setSolicitante(Pessoa solicitante) {
 		this.solicitante = solicitante;
+	}
+
+	public Endereco getEstabelecimento() {
+		return estabelecimento;
+	}
+
+	public void setEstabelecimento(Endereco estabelecimento) {
+		this.estabelecimento = estabelecimento;
+	}
+
+	public EstadoQueixa getEstado() {
+		return estado;
+	}
+
+	public void setEstado(EstadoQueixa estado) {
+		this.estado = estado;
 	}
 
 	@Override

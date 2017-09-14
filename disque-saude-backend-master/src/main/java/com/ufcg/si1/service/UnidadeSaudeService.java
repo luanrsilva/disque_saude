@@ -6,19 +6,21 @@ import exceptions.Rep;
 
 import java.util.List;
 
+import com.ufcg.si1.model.UnidadeSaude;
+
 
 public interface UnidadeSaudeService {
-    Object procura(int codigo) throws Rep,
+	UnidadeSaude procura(int codigo) throws Rep,
             ObjetoInexistenteException;
 
-    List<Object> getAll();
+    List<UnidadeSaude> getAll();
 
-    void insere(Object us)throws Rep,
+    void insere(UnidadeSaude us)throws Rep,
             ObjetoJaExistenteException;
 
-    boolean existe(int codigo);
+    UnidadeSaude findById(int id);
 
-    Object findById(long id);
+    UnidadeSaude findByBairro(String bairro);
 
-    Object findByBairro(String bairro);
+	boolean existe(int l);
 }
