@@ -1,7 +1,15 @@
 package com.ufcg.si1.model.prefeitura;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.ufcg.si1.model.situacao.Situacao;
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = PrefeituraCaos.class, name = "caos"),
+        @JsonSubTypes.Type(value = PrefeituraNormal.class, name = "normal"),
+        @JsonSubTypes.Type(value = PrefeituraExtra.class, name = "extra")
+})
 public abstract class Prefeitura {
 	
 	

@@ -9,7 +9,8 @@ import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = PostoSaude.class, name = "posto")
+        @JsonSubTypes.Type(value = PostoSaude.class, name = "posto"),
+        @JsonSubTypes.Type(value = HospitalAdapter.class, name = "hospital")
 })
 public abstract class UnidadeSaude {
     private int codigo;
